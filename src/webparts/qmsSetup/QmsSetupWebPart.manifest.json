@@ -1,0 +1,19 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "6fd1f809-5a33-4621-8a62-75c73c8e9979",
+  "alias": "QmsSetupWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportedHosts": ["SharePointWebPart", "SharePointFullPage", "TeamsTab"],
+  "supportsThemeVariants": true,
+  "preconfiguredEntries": [{
+    "groupId": "246ba944-4fa8-4b39-95e9-de671dcea279",
+    "group": { "default": "QMS" },
+    "title": { "default": "QMS Einrichtung" },
+    "description": { "default": "Richtet Listen, Spalten, Managed Metadata, Beispieldaten und Seiten des QMS ein." },
+    "officeFabricIconFontName": "Settings",
+    "properties": { "title": "QMS Einrichtung", "categoryMode": "taxonomy" }
+  }]
+}

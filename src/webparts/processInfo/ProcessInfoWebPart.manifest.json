@@ -1,0 +1,19 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "27737fa0-f819-49f7-b320-8b4af2af4757",
+  "alias": "QmsProcessInfoWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportedHosts": ["SharePointWebPart", "SharePointFullPage", "TeamsTab"],
+  "supportsThemeVariants": true,
+  "preconfiguredEntries": [{
+    "groupId": "246ba944-4fa8-4b39-95e9-de671dcea279",
+    "group": { "default": "QMS" },
+    "title": { "default": "QMS Prozess-Informationen" },
+    "description": { "default": "Kopfbereich der Prozessseite: Beschreibung, Verantwortung, Status, Input/Output (Prozess über ?pid=)." },
+    "officeFabricIconFontName": "Info",
+    "properties": { "showRoleOwners": true }
+  }]
+}

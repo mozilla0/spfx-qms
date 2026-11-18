@@ -1,0 +1,38 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "qms-web-parts": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/processMap/ProcessMapWebPart.js",
+          "manifest": "./src/webparts/processMap/ProcessMapWebPart.manifest.json"
+        },
+        {
+          "entrypoint": "./lib/webparts/processInfo/ProcessInfoWebPart.js",
+          "manifest": "./src/webparts/processInfo/ProcessInfoWebPart.manifest.json"
+        },
+        {
+          "entrypoint": "./lib/webparts/processDiagram/ProcessDiagramWebPart.js",
+          "manifest": "./src/webparts/processDiagram/ProcessDiagramWebPart.manifest.json"
+        },
+        {
+          "entrypoint": "./lib/webparts/subProcesses/SubProcessesWebPart.js",
+          "manifest": "./src/webparts/subProcesses/SubProcessesWebPart.manifest.json"
+        },
+        {
+          "entrypoint": "./lib/webparts/processDocuments/ProcessDocumentsWebPart.js",
+          "manifest": "./src/webparts/processDocuments/ProcessDocumentsWebPart.manifest.json"
+        },
+        {
+          "entrypoint": "./lib/webparts/qmsSetup/QmsSetupWebPart.js",
+          "manifest": "./src/webparts/qmsSetup/QmsSetupWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "QmsStrings": "lib/loc/{locale}.js"
+  }
+}

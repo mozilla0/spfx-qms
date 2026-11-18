@@ -1,0 +1,24 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "496d47bd-2664-4e71-a981-c8808750ad35",
+  "alias": "QmsProcessMapWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportedHosts": ["SharePointWebPart", "SharePointFullPage", "TeamsTab"],
+  "supportsThemeVariants": true,
+  "supportsFullBleed": true,
+  "preconfiguredEntries": [{
+    "groupId": "246ba944-4fa8-4b39-95e9-de671dcea279",
+    "group": { "default": "QMS" },
+    "title": { "default": "QMS Prozesslandkarte" },
+    "description": { "default": "Grafische Prozesslandkarte aus den Stammdaten (Kategorien, Prozessgruppen, Prozesse)." },
+    "officeFabricIconFontName": "Org",
+    "properties": {
+      "title": "Prozesslandkarte",
+      "showCustomerFrame": true,
+      "showSearch": true
+    }
+  }]
+}

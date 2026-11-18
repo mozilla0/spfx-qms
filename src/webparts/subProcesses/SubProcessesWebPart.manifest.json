@@ -1,0 +1,19 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "2ecb4dea-fb34-440a-95cf-b1c073d139dc",
+  "alias": "QmsSubProcessesWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportedHosts": ["SharePointWebPart", "SharePointFullPage", "TeamsTab"],
+  "supportsThemeVariants": true,
+  "preconfiguredEntries": [{
+    "groupId": "246ba944-4fa8-4b39-95e9-de671dcea279",
+    "group": { "default": "QMS" },
+    "title": { "default": "QMS Sub-Prozesse" },
+    "description": { "default": "Listet die Sub-Prozesse des aktuellen Prozesses (?pid=) direkt aus der Prozessliste." },
+    "officeFabricIconFontName": "BulletedTreeList",
+    "properties": { "title": "Sub-Prozesse" }
+  }]
+}

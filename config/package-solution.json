@@ -1,0 +1,39 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "QMS Prozesslandkarte",
+    "id": "28f373fc-eca9-4ac5-b7f7-18be4a72d20a",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "developer": {
+      "name": "QMS SPFx",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.24.1"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "QMS mit Prozesslandkarte und BPMN-Viewer"
+      },
+      "longDescription": {
+        "default": "Qualit\u00e4tsmanagementsystem f\u00fcr SharePoint: Prozesslandkarte aus Stammdaten (Listen, Managed Metadata), BPMN-Prozessdiagramme aus SVG, Prozessinformationen, Sub-Prozesse und Prozessdokumente \u2013 ohne Abh\u00e4ngigkeit vom Suchindex. Inklusive automatischer Einrichtung der Listen und Spalten."
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "QMS Prozesslandkarte",
+        "description": "Webparts des QMS (Prozesslandkarte, BPMN-Viewer, Prozessseite, Einrichtung)",
+        "id": "29fed8f8-1498-4c40-92f2-3694909ca951",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/qms-spfx.sppkg"
+  }
+}
