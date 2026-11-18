@@ -39,7 +39,7 @@ export default class ProcessInfoWebPart extends QmsBaseWebPart<IProcessInfoWebPa
             this.siteUrlField(),
             PropertyPaneTextField('mapPageUrl', {
               label: strings.PropMapPageUrl,
-              placeholder: defaultMapPageUrl(this.context.pageContext.web.absoluteUrl)
+              placeholder: defaultMapPageUrl(this.service.currentWebUrl)
             }),
             PropertyPaneToggle('showRoleOwners', { label: strings.PropShowRoleOwners, onText: strings.On, offText: strings.Off })
           ]

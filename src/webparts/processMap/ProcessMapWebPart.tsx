@@ -52,7 +52,7 @@ export default class ProcessMapWebPart extends QmsBaseWebPart<IProcessMapWebPart
               PropertyPaneTextField('processPageUrl', {
                 label: strings.PropProcessPageUrl,
                 description: strings.PropProcessPageUrlDescription,
-                placeholder: defaultProcessPageUrl(this.context.pageContext.web.absoluteUrl)
+                placeholder: defaultProcessPageUrl(this.service.currentWebUrl)
               })
             ]
           }

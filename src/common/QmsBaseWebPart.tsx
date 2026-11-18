@@ -60,7 +60,7 @@ export abstract class QmsBaseWebPart<P extends IQmsBaseWebPartProps> extends Bas
     return PropertyPaneTextField('siteUrl', {
       label: strings.PropSiteUrl,
       description: strings.PropSiteUrlDescription,
-      placeholder: this.context.pageContext.web.absoluteUrl
+      placeholder: this.service.currentWebUrl
     });
   }
 

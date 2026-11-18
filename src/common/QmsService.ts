@@ -46,12 +46,17 @@ interface ITerm { id: string; labels: ITermLabel[]; properties?: ITermProperty[]
 export class QmsService {
   public readonly webAbsoluteUrl: string;
   public readonly webServerRelativeUrl: string;
+  /** URL der Site, auf der die Seite liegt (beim Start gesichert). */
+  public readonly currentWebUrl: string;
+  private readonly _uiCulture: string;
   private readonly _sp: SPFI;
   private readonly _context: WebPartContext;
 
   public constructor(context: WebPartContext, siteUrl?: string) {
     this._context = context;
-    this.webAbsoluteUrl = normalizeSiteUrl(siteUrl) || context.pageContext.web.absoluteUrl;
+    this.currentWebUrl = context.pageContext.web.absoluteUrl.replace(/\/+$/, '');
+    this._uiCulture = (context.pageContext.cultureInfo && context.pageContext.cultureInfo.currentUICultureName) || 'de-CH';
+    this.webAbsoluteUrl = normalizeSiteUrl(siteUrl) || this.currentWebUrl;
     this.webServerRelativeUrl = new URL(this.webAbsoluteUrl).pathname.replace(/\/$/, '') || '/';
     this._sp = getSP(context, this.webAbsoluteUrl);
   }
@@ -235,7 +240,7 @@ export class QmsService {
   }
 
   private _termsToCategories(terms: ITerm[]): IQmsCategory[] {
-    const lang: string = (this._context.pageContext.cultureInfo.currentUICultureName || 'de-CH').toLowerCase();
+    const lang: string = this._uiCulture.toLowerCase();
     const mapped: IQmsCategory[] = terms.map((term, index) => {
       const label: ITermLabel | undefined =
         term.labels.filter(l => l.languageTag.toLowerCase() === lang)[0] ||

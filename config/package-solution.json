@@ -3,7 +3,7 @@
   "solution": {
     "name": "QMS Prozesslandkarte",
     "id": "28f373fc-eca9-4ac5-b7f7-18be4a72d20a",
-    "version": "1.1.0.0",
+    "version": "1.1.1.0",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
     "developer": {
@@ -29,7 +29,7 @@
         "title": "QMS Prozesslandkarte",
         "description": "Webparts des QMS (Prozesslandkarte, BPMN-Viewer, Prozessseite, Einrichtung)",
         "id": "29fed8f8-1498-4c40-92f2-3694909ca951",
-        "version": "1.1.0.0"
+        "version": "1.1.1.0"
       }
     ]
   },
