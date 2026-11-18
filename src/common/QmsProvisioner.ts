@@ -1,6 +1,7 @@
 import { SPHttpClient, SPHttpClientResponse } from '@microsoft/sp-http';
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { PermissionKind } from '@pnp/sp/security';
+import '@pnp/sp/site-users/web';
 import { ClientsideWebpart, CreateClientsidePage, IClientsidePage, IClientsidePageComponent } from '@pnp/sp/clientside-pages';
 import { IList } from '@pnp/sp/lists';
 import { QmsService } from './QmsService';
@@ -17,8 +18,7 @@ import {
   QmsListKey
 } from './qmsSchema';
 import { QMS_WEBPART_IDS } from './webpartIds';
-import { SAMPLE_DIAGRAM_SVG } from './sampleDiagram';
-import { IQmsCategory } from './models';
+import { demoManifestUrl } from './demo/demoManifest';
 
 export type QmsCategoryMode = 'taxonomy' | 'choice';
 
@@ -113,99 +113,25 @@ export class QmsProvisioner {
     log('Einrichtung abgeschlossen.', 'success');
   }
 
-  /** Legt Beispieldaten (Rollen, Gruppen, Prozesse, BPMN-Diagramm) an – nur in leeren Listen. */
+  /** Legt den Demodatensatz an (Code wird erst bei Bedarf nachgeladen). */
   public async seedSampleData(log: QmsLogger): Promise<void> {
-    const sp = this._svc.sp;
-    const rolesList: IList = sp.web.getList(this._svc.listUrl('roles'));
-    const groupsList: IList = sp.web.getList(this._svc.listUrl('groups'));
-    const processList: IList = sp.web.getList(this._svc.listUrl('processes'));
+    const { QmsDemoSeeder } = await import(/* webpackChunkName: 'qms-demo' */ './demo/QmsDemoSeeder');
+    await new QmsDemoSeeder(this._svc).seed(log);
+  }
 
-    const existing: { Id: number }[] = await groupsList.items.select('Id').top(1)();
-    if (existing.length > 0) {
-      log('Prozessgruppen enthalten bereits Daten – Beispieldaten werden nicht angelegt.', 'warning');
-      return;
+  /** Entfernt die Demodaten gemäss Protokolldatei (Papierkorb). */
+  public async removeSampleData(log: QmsLogger): Promise<void> {
+    const { QmsDemoSeeder } = await import(/* webpackChunkName: 'qms-demo' */ './demo/QmsDemoSeeder');
+    await new QmsDemoSeeder(this._svc).remove(log);
+  }
+
+  /** Prüft, ob Demodaten angelegt wurden (Protokolldatei vorhanden). */
+  public async hasSampleData(): Promise<boolean> {
+    try {
+      return await this._svc.sp.web.getFileByServerRelativePath(demoManifestUrl(this._svc.webServerRelativeUrl)).exists();
+    } catch {
+      return false;
     }
-
-    QmsService.clearCache();
-    const categories: IQmsCategory[] = await this._svc.getCategories();
-    if (categories.length < 3) {
-      throw new Error('Es sind keine drei Prozesskategorien vorhanden. Bitte zuerst die Einrichtung ausführen.');
-    }
-    const catValue = (index: number): string => {
-      const c: IQmsCategory = categories[index];
-      return c.key === c.label ? c.label : `${c.label}|${c.key};`;
-    };
-
-    const roleNames: string[] = ['Geschäftsleitung', 'Qualitätsmanager/in', 'Verkaufsleiter/in', 'Leiter/in Finanzen', 'Leiter/in Logistik', 'HR-Verantwortliche/r'];
-    const roleIds: Record<string, number> = {};
-    for (const name of roleNames) {
-      roleIds[name] = await addItem(rolesList, this._svc.listUrl('roles'), { Title: name });
-    }
-    log(`${roleNames.length} Rollen angelegt.`, 'success');
-
-    const groups: [string, number, string][] = [
-      ['Strategie & Planung', 0, 'Geschäftsleitung'], ['Qualitätsmanagement', 0, 'Qualitätsmanager/in'], ['Management-Review', 0, 'Geschäftsleitung'],
-      ['Marketing & Vertrieb', 1, 'Verkaufsleiter/in'], ['Auftragsabwicklung', 1, 'Verkaufsleiter/in'], ['Entwicklung', 1, 'Geschäftsleitung'],
-      ['Beschaffung', 1, 'Leiter/in Logistik'], ['Produktion', 1, 'Leiter/in Logistik'], ['Logistik & Versand', 1, 'Leiter/in Logistik'],
-      ['Kundenservice', 1, 'Verkaufsleiter/in'],
-      ['Personal', 2, 'HR-Verantwortliche/r'], ['Finanzen & Controlling', 2, 'Leiter/in Finanzen'], ['Informatik', 2, 'Geschäftsleitung'],
-      ['Infrastruktur', 2, 'Leiter/in Logistik'], ['Verbesserungsmanagement', 2, 'Qualitätsmanager/in']
-    ];
-    const groupIds: Record<string, number> = {};
-    for (let i = 0; i < groups.length; i++) {
-      const [title, cat, role] = groups[i];
-      groupIds[title] = await addItem(groupsList, this._svc.listUrl('groups'), {
-        Title: title,
-        QmsCategory: catValue(cat),
-        QmsGroupOrder: String(i + 1),
-        QmsGroupRole: String(roleIds[role])
-      });
-    }
-    log(`${groups.length} Prozessgruppen angelegt.`, 'success');
-
-    const processes: { title: string; key: string; group: string; role: string; desc: string; parent?: string; status?: string }[] = [
-      { title: 'Kundenauftrag abwickeln', key: 'AUFTRAG', group: 'Auftragsabwicklung', role: 'Verkaufsleiter/in', desc: 'Vom Bestelleingang bis zur Auslieferung beim Kunden', status: 'Freigegeben' },
-      { title: 'Bonität prüfen', key: 'BONITAET', group: 'Auftragsabwicklung', role: 'Leiter/in Finanzen', desc: 'Kreditwürdigkeit von Neu- und Bestandeskunden prüfen', parent: 'Kundenauftrag abwickeln' },
-      { title: 'Ware kommissionieren', key: 'KOMMISSION', group: 'Auftragsabwicklung', role: 'Leiter/in Logistik', desc: 'Artikel gemäss Lieferschein bereitstellen', parent: 'Kundenauftrag abwickeln' },
-      { title: 'Offerte erstellen', key: 'OFFERTE', group: 'Marketing & Vertrieb', role: 'Verkaufsleiter/in', desc: 'Kundenanfrage prüfen, kalkulieren und Offerte versenden', status: 'Freigegeben' },
-      { title: 'Reklamation bearbeiten', key: 'REKLAMATION', group: 'Kundenservice', role: 'Qualitätsmanager/in', desc: 'Kundenreklamationen erfassen, analysieren und abschliessen', status: 'In Prüfung' },
-      { title: 'Lieferanten bewerten', key: 'LIEFERANTEN', group: 'Beschaffung', role: 'Leiter/in Logistik', desc: 'Jährliche Bewertung der Hauptlieferanten nach Qualität, Termintreue und Preis' },
-      { title: 'Interne Audits durchführen', key: 'AUDIT', group: 'Qualitätsmanagement', role: 'Qualitätsmanager/in', desc: 'Auditprogramm planen, Audits durchführen und Massnahmen verfolgen', status: 'Freigegeben' },
-      { title: 'Management-Review durchführen', key: 'REVIEW', group: 'Management-Review', role: 'Geschäftsleitung', desc: 'Jährliche Bewertung des QMS durch die Geschäftsleitung' },
-      { title: 'Neue Mitarbeitende einführen', key: 'ONBOARDING', group: 'Personal', role: 'HR-Verantwortliche/r', desc: 'Einführung neuer Mitarbeitender inkl. Arbeitsplatz und Zugänge' },
-      { title: 'Monatsabschluss erstellen', key: 'MONATSABSCHLUSS', group: 'Finanzen & Controlling', role: 'Leiter/in Finanzen', desc: 'Buchungen abstimmen und Monatsreporting erstellen' }
-    ];
-    const processIds: Record<string, number> = {};
-    for (let i = 0; i < processes.length; i++) {
-      const p = processes[i];
-      const values: Record<string, string> = {
-        Title: p.title,
-        QmsProcessKey: p.key,
-        QmsDescription: p.desc,
-        QmsProcessGroup: String(groupIds[p.group]),
-        QmsRole: String(roleIds[p.role]),
-        QmsProcessOrder: String(i + 1),
-        QmsStatus: p.status || 'Entwurf',
-        QmsVersion: '1.0'
-      };
-      if (p.parent && processIds[p.parent]) {
-        values.QmsParentProcess = String(processIds[p.parent]);
-      }
-      processIds[p.title] = await addItem(processList, this._svc.listUrl('processes'), values);
-    }
-    log(`${processes.length} Prozesse angelegt.`, 'success');
-
-    const libUrl: string = this._svc.listUrl('documents');
-    const file = await sp.web.getFolderByServerRelativePath(libUrl).files
-      .addUsingPath('Kundenauftrag-abwickeln.svg', SAMPLE_DIAGRAM_SVG, { Overwrite: true });
-    const fileItem = await sp.web.getFileByServerRelativePath(file.ServerRelativeUrl).getItem();
-    await fileItem.validateUpdateListItem([
-      { FieldName: 'QmsDocProcess', FieldValue: String(processIds['Kundenauftrag abwickeln']) },
-      { FieldName: 'QmsDocType', FieldValue: 'Diagramm' },
-      { FieldName: 'QmsDocRole', FieldValue: String(roleIds['Verkaufsleiter/in']) }
-    ]);
-    log('BPMN-Beispieldiagramm «Kundenauftrag-abwickeln.svg» hochgeladen (bitte in der Bibliothek freigeben).', 'success');
-    QmsService.clearCache();
   }
 
   /** Erstellt die Seiten «Prozesslandkarte» und «Prozess» mit den passenden Webparts. */
@@ -395,17 +321,6 @@ export class QmsProvisioner {
     return response.json();
   }
   /* eslint-enable @typescript-eslint/no-explicit-any */
-}
-
-async function addItem(list: IList, listUrl: string, values: Record<string, string>): Promise<number> {
-  const formValues = Object.keys(values).map(k => ({ FieldName: k, FieldValue: values[k] }));
-  const result = await list.addValidateUpdateItemUsingPath(formValues, listUrl);
-  const failed = result.filter(r => r.HasException);
-  if (failed.length > 0) {
-    throw new Error(`${failed[0].FieldName}: ${failed[0].ErrorMessage}`);
-  }
-  const idField = result.filter(r => r.FieldName === 'Id')[0];
-  return idField && idField.FieldValue ? parseInt(idField.FieldValue, 10) : 0;
 }
 
 function xmlEscape(value: string): string {

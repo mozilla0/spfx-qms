@@ -7,6 +7,7 @@ import '@pnp/sp/views';
 import '@pnp/sp/files';
 import '@pnp/sp/folders';
 import '@pnp/sp/security';
+import '@pnp/sp/site-users/web';
 import '@pnp/sp/clientside-pages';
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 

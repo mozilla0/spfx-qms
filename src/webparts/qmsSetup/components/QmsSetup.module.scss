@@ -76,3 +76,16 @@
 .log_warning { color: #ffd27a; }
 .log_error { color: #ff9b94; }
 .log_info { color: #d6e2f0; }
+
+.confirm {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--qms-warning-bg);
+  color: var(--qms-warning);
+  > span { flex: 1 1 260px; color: var(--qms-ink); }
+}

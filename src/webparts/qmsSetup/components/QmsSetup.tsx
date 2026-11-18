@@ -29,6 +29,8 @@ export const QmsSetup: React.FC<IQmsSetupProps> = props => {
   const [busy, setBusy] = React.useState<string | undefined>(undefined);
   const [log, setLog] = React.useState<ILogEntry[]>([]);
   const [mapUrl, setMapUrl] = React.useState<string | undefined>(undefined);
+  const [confirmRemove, setConfirmRemove] = React.useState<boolean>(false);
+  const demo = useAsync<boolean>(() => provisioner.hasSampleData(), [provisioner]);
 
   const write = (message: string, level: QmsLogLevel = 'info'): void => {
     const time: string = new Date().toLocaleTimeString('de-CH');
@@ -43,7 +45,9 @@ export const QmsSetup: React.FC<IQmsSetupProps> = props => {
       write(errorMessage(e), 'error');
     } finally {
       setBusy(undefined);
+      setConfirmRemove(false);
       status.reload();
+      demo.reload();
     }
   };
 
@@ -121,15 +125,30 @@ export const QmsSetup: React.FC<IQmsSetupProps> = props => {
           onClick={() => run('provision', () => provisioner.provision({ categoryMode: existingMode || mode, termSetId, termGroupName: groupName, termSetName: setName }, write))}>
           {ready ? strings.SetupUpdate : strings.SetupProvision}
         </QmsButton>
-        <QmsButton icon="layers" disabled={!!busy || !ready} onClick={() => run('seed', () => provisioner.seedSampleData(write))}>
-          {strings.SetupSeed}
-        </QmsButton>
+        {!demo.data && (
+          <QmsButton icon="layers" disabled={!!busy || !ready} onClick={() => run('seed', () => provisioner.seedSampleData(write))}>
+            {strings.SetupSeed}
+          </QmsButton>
+        )}
+        {demo.data && !confirmRemove && (
+          <QmsButton icon="close" disabled={!!busy} onClick={() => setConfirmRemove(true)}>{strings.SetupRemoveDemo}</QmsButton>
+        )}
         <QmsButton icon="document" disabled={!!busy || !ready}
           onClick={() => run('pages', async () => { setMapUrl(await provisioner.createPages(write)); })}>
           {strings.SetupPages}
         </QmsButton>
         {mapUrl && <QmsButton variant="subtle" icon="external" href={mapUrl}>{strings.SetupOpenMap}</QmsButton>}
       </div>
+      {confirmRemove && (
+        <div className={styles.confirm} role="alertdialog" aria-label={strings.SetupRemoveDemo}>
+          <QmsIcon name="warning" />
+          <span>{strings.SetupRemoveHint}</span>
+          <QmsButton variant="primary" disabled={!!busy} onClick={() => run('remove', () => provisioner.removeSampleData(write))}>
+            {strings.SetupRemoveConfirm}
+          </QmsButton>
+          <QmsButton variant="subtle" disabled={!!busy} onClick={() => setConfirmRemove(false)}>{strings.Cancel}</QmsButton>
+        </div>
+      )}
 
       {log.length > 0 && (
         <div className={styles.log} role="log" aria-live="polite">

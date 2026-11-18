@@ -4,6 +4,7 @@ declare interface IQmsStrings {
   ApprovalDraft: string;
   ApprovalPending: string;
   ApprovalScheduled: string;
+  Cancel: string;
   Close: string;
   DiagramDownload: string;
   DiagramEmptyText: string;
@@ -110,6 +111,9 @@ declare interface IQmsStrings {
   SetupPaneDescription: string;
   SetupProvision: string;
   SetupReady: string;
+  SetupRemoveConfirm: string;
+  SetupRemoveDemo: string;
+  SetupRemoveHint: string;
   SetupRunning: string;
   SetupSeed: string;
   SetupStep1: string;

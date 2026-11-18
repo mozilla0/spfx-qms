@@ -4,10 +4,6 @@ Qualitätsmanagementsystem für SharePoint Online. Die Prozesslandkarte entsteht
 (Listen und Managed Metadata), Prozessdiagramme werden aus BPMN-SVG-Dateien dargestellt. Alle Webparts lesen
 direkt über die Listen-REST-API – **kein Suchindex**, Änderungen sind sofort sichtbar.
 
-<img width="1344" height="900" alt="image" src="https://github.com/user-attachments/assets/6507ef61-20a5-441c-969a-db7fc34ce44a" />
-<img width="1344" height="1898" alt="image" src="https://github.com/user-attachments/assets/01f38fe4-3ea3-4477-9977-987743df9d7e" />
-<img width="1344" height="900" alt="image" src="https://github.com/user-attachments/assets/d913a859-df3c-4309-ae81-adb2b842eca9" />
-
 | | |
 |---|---|
 | SPFx | 1.24.1 (Heft-Build) |
@@ -64,8 +60,25 @@ Danach auf der QMS-Site:
 1. Seite anlegen, Webpart **QMS Einrichtung** einfügen.
 2. **QMS einrichten** – für Managed Metadata braucht es Term-Store-Admin-Rechte, alternativ eine bestehende
    Term-Set-ID eintragen oder den Modus «Auswahlspalte» wählen.
-3. Optional **Beispieldaten anlegen** (Rollen, 15 Prozessgruppen, Prozesse, BPMN-Diagramm «Kundenauftrag abwickeln»).
+3. Optional **Demodaten anlegen** (nur bei leerer Prozessgruppen-Liste), siehe unten.
 4. **Seiten erstellen** – legt `Prozesslandkarte.aspx` und `Prozess.aspx` mit allen Webparts an.
+
+## Demodaten
+
+Fiktive Musterfirma (Handel/Produktion), definiert in `src/common/demo/demoData.ts`:
+
+- 8 Rollen – «Geschäftsleitung» und «Qualitätsmanager/in» mit dem ausführenden Benutzer als Rolleninhaber
+- 15 Prozessgruppen in den drei Kategorien
+- 36 Prozesse, davon 8 Sub-Prozesse, mit Status, Version, Normbezug, Input/Output, Kennzahlen;
+  einige Überprüfungstermine bewusst überfällig, mehrere Prozesse mit dem ausführenden Benutzer als Eigner
+- 5 BPMN-Diagramme (SVG, aus `bpmnBuilder.ts` erzeugt) mit klickbaren Sub-Prozessen:
+  Kundenauftrag abwickeln, Reklamation bearbeiten, Interne Audits durchführen, Neue Mitarbeitende einführen, Offerte erstellen
+- 21 Dokumente (PDF und CSV) mit gemischtem Freigabestatus (freigegeben, ausstehend, Entwurf)
+
+Die Demodaten werden **nur auf Knopfdruck** angelegt. Der Code dafür (Daten, BPMN- und PDF-Generator) liegt in einem
+eigenen Chunk (`qms-demo`), der erst beim Klick nachgeladen wird – die Webparts für Leser laden ihn nie.
+Alle angelegten Elemente werden in `SiteAssets/qms-demodaten.json` protokolliert. **Demodaten entfernen** verschiebt
+genau diese Elemente in den Papierkorb; eigene Daten bleiben unberührt.
 
 ## BPMN-Diagramme
 
