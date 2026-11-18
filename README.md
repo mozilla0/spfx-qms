@@ -4,6 +4,10 @@ Qualitätsmanagementsystem für SharePoint Online. Die Prozesslandkarte entsteht
 (Listen und Managed Metadata), Prozessdiagramme werden aus BPMN-SVG-Dateien dargestellt. Alle Webparts lesen
 direkt über die Listen-REST-API – **kein Suchindex**, Änderungen sind sofort sichtbar.
 
+<img width="1344" height="900" alt="image" src="https://github.com/user-attachments/assets/42b077cf-efc8-4067-9406-39ab008a7819" />
+<img width="1344" height="1898" alt="image" src="https://github.com/user-attachments/assets/486e1577-c090-4022-8a85-de0c8ec043c1" />
+<img width="1344" height="900" alt="image" src="https://github.com/user-attachments/assets/dee8f8a6-5efe-4a26-a066-64f81fefeb48" />
+
 | | |
 |---|---|
 | SPFx | 1.24.1 (Heft-Build) |
